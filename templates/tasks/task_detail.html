@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="row">
+
+
+    <div class="col-md-8">
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+                <h3 class="card-title font-weight-bold">
+
+                    {{ task.title }}
+
+                </h3>
+
+            </div>
+
+
+
+            <div class="card-body">
+
+
+                <p>
+
+                    <strong>
+                        Project:
+                    </strong>
+
+                    {{ task.project.name }}
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Assigned To:
+                    </strong>
+
+
+                    {% if task.assigned_to %}
+
+                        {{ task.assigned_to.username }}
+
+                    {% else %}
+
+                        Not Assigned
+
+                    {% endif %}
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Status:
+                    </strong>
+
+
+                    <span class="badge badge-info">
+
+                        {{ task.status }}
+
+                    </span>
+
+                </p>
+
+
+
+
+                <p>
+
+                    <strong>
+                        Priority:
+                    </strong>
+
+
+                    <span class="badge badge-warning">
+
+                        {{ task.priority }}
+
+                    </span>
+
+                </p>
+
+
+
+
+                <p>
+
+                    <strong>
+                        Due Date:
+                    </strong>
+
+
+                    {% if task.due_date %}
+
+                        {{ task.due_date }}
+
+                    {% else %}
+
+                        No Date
+
+                    {% endif %}
+
+
+                </p>
+
+
+
+
+                <p>
+
+                    <strong>
+                        Description:
+                    </strong>
+
+                </p>
+
+
+                <p>
+
+                    {{ task.description }}
+
+                </p>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+        <!-- Comments Section -->
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+
+                <h3 class="card-title font-weight-bold">
+
+                    Comments
+
+                </h3>
+
+
+            </div>
+
+
+
+
+            <div class="card-body">
+
+
+
+                {% for comment in comments %}
+
+
+
+                <div class="border rounded p-3 mb-3">
+
+
+
+                    <h6>
+
+
+                        <i class="fas fa-user"></i>
+
+
+                        {{ comment.user.username }}
+
+
+                    </h6>
+
+
+
+
+                    <p>
+
+                        {{ comment.message }}
+
+                    </p>
+
+
+
+
+
+                    <small class="text-muted">
+
+
+                        <i class="fas fa-clock"></i>
+
+
+                        {{ comment.created_at|date:"d M Y, H:i" }}
+
+
+                    </small>
+
+
+
+
+
+                    {% if comment.user == request.user or request.user.is_staff %}
+
+
+                    <br>
+
+
+
+                    <a href="{% url 'delete_comment' comment.id %}"
+
+                       class="btn btn-danger btn-sm mt-2">
+
+
+                        <i class="fas fa-trash"></i>
+
+
+                        Delete Comment
+
+
+                    </a>
+
+
+
+                    {% endif %}
+
+
+
+                </div>
+
+
+
+
+
+                {% empty %}
+
+
+
+                <p class="text-muted">
+
+                    No comments yet.
+
+                </p>
+
+
+
+                {% endfor %}
+
+
+
+
+
+
+
+
+                <form method="POST">
+
+
+                    {% csrf_token %}
+
+
+
+                    <div class="form-group">
+
+
+                        <textarea
+
+                            name="message"
+
+                            class="form-control"
+
+                            rows="3"
+
+                            placeholder="Write a comment..."
+
+                            required>
+
+                        </textarea>
+
+
+                    </div>
+
+
+
+
+
+                    <button
+
+                        type="submit"
+
+                        class="btn btn-primary">
+
+
+                        <i class="fas fa-comment"></i>
+
+                        Add Comment
+
+
+                    </button>
+
+
+
+                </form>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Activity History -->
+
+
+    <div class="col-md-4">
+
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+
+                <h3 class="card-title font-weight-bold">
+
+
+                    Activity History
+
+
+                </h3>
+
+
+            </div>
+
+
+
+
+
+            <div class="card-body">
+
+
+
+
+
+                {% for activity in activities %}
+
+
+
+                <div class="border-bottom pb-2 mb-3">
+
+
+
+                    <i class="fas fa-history"></i>
+
+
+                    <strong>
+
+                        {{ activity.user.username|default:"System" }}
+
+                    </strong>
+
+
+
+                    <br>
+
+
+                    {{ activity.action }}
+
+
+
+
+
+                    <br>
+
+
+
+
+                    <small class="text-muted">
+
+
+                        <i class="fas fa-clock"></i>
+
+
+                        {{ activity.created_at|date:"d M Y, H:i" }}
+
+
+                    </small>
+
+
+
+                </div>
+
+
+
+
+                {% empty %}
+
+
+
+                <p class="text-muted">
+
+                    No activity found.
+
+                </p>
+
+
+
+                {% endfor %}
+
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+{% endblock %}

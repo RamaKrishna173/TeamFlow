@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h3 class="card-title">
+            User Profile
+        </h3>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input type="text"
+                       name="username"
+                       value="{{ user.username }}"
+                       class="form-control">
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input type="email"
+                       name="email"
+                       value="{{ user.email }}"
+                       class="form-control">
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Theme
+                </label>
+
+
+                <select name="theme"
+                        class="form-control">
+
+
+                    <option value="light"
+                    {% if profile.theme == "light" %}
+                    selected
+                    {% endif %}>
+                        Light
+                    </option>
+
+
+                    <option value="dark"
+                    {% if profile.theme == "dark" %}
+                    selected
+                    {% endif %}>
+                        Dark
+                    </option>
+
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Date Joined
+                </label>
+
+                <input type="text"
+                       value="{{ user.date_joined }}"
+                       class="form-control"
+                       readonly>
+
+            </div>
+
+
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                Update Profile
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}

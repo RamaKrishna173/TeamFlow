@@ -1,0 +1,636 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="row mb-3">
+
+    <div class="col">
+
+        <h1 class="font-weight-bold">
+            Dashboard
+        </h1>
+
+        <p class="text-muted">
+            Overview
+        </p>
+
+    </div>
+
+
+    <div class="col text-right">
+
+        <p class="text-muted">
+            🏠 Home / Dashboard
+        </p>
+
+    </div>
+
+</div>
+
+
+
+
+
+<div class="row">
+
+
+    <div class="col-lg-3 col-6">
+
+        <div class="small-box bg-info">
+
+            <div class="inner">
+
+                <h3>
+                    {{ total_projects }}
+                </h3>
+
+                <p>
+                    Projects
+                </p>
+
+            </div>
+
+
+            <div class="icon">
+
+                <i class="fas fa-project-diagram"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="col-lg-3 col-6">
+
+        <div class="small-box bg-success">
+
+            <div class="inner">
+
+                <h3>
+                    {{ total_tasks }}
+                </h3>
+
+                <p>
+                    Tasks
+                </p>
+
+            </div>
+
+
+            <div class="icon">
+
+                <i class="fas fa-tasks"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="col-lg-3 col-6">
+
+        <div class="small-box bg-warning">
+
+            <div class="inner">
+
+                <h3>
+                    {{ progress_tasks }}
+                </h3>
+
+                <p>
+                    In Progress
+                </p>
+
+            </div>
+
+
+            <div class="icon">
+
+                <i class="fas fa-spinner"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="col-lg-3 col-6">
+
+        <div class="small-box bg-danger">
+
+            <div class="inner">
+
+                <h3>
+                    {{ overdue_tasks }}
+                </h3>
+
+                <p>
+                    Overdue Tasks
+                </p>
+
+            </div>
+
+
+            <div class="icon">
+
+                <i class="fas fa-clock"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="row mt-4">
+
+    <!-- Tasks By Status Chart -->
+
+    <div class="col-md-6">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title font-weight-bold">
+
+                    Tasks By Status
+
+                </h3>
+
+            </div>
+
+            <div class="card-body text-center">
+
+                <div
+                    style="
+                        width:240px;
+                        height:240px;
+                        margin:auto;
+                    ">
+
+                    <canvas id="taskChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Project Completion Horizontal Chart -->
+
+    <div class="col-md-6">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3 class="card-title font-weight-bold">
+
+                    Project Completion Status
+
+                </h3>
+
+            </div>
+
+            <div class="card-body">
+
+                <canvas id="projectChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<!-- Task Status Details -->
+
+
+<div class="row mt-4">
+
+
+    <div class="col-md-6">
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+                <h3 class="card-title font-weight-bold">
+
+                    Status Details
+
+                </h3>
+
+            </div>
+
+
+            <div class="card-body">
+
+
+                <p>
+
+                    <span style="color:#4285F4">
+
+                        ●
+
+                    </span>
+
+                    Pending Tasks :
+
+                    {{ todo_tasks }}
+
+                </p>
+
+
+
+                <p>
+
+                    <span style="color:#22C55E">
+
+                        ●
+
+                    </span>
+
+                    In Progress :
+
+                    {{ progress_tasks }}
+
+                </p>
+
+
+
+                <p>
+
+                    <span style="color:#6B7280">
+
+                        ●
+
+                    </span>
+
+                    Completed :
+
+                    {{ completed_tasks }}
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- Tasks Due This Week -->
+
+
+    <div class="col-md-6">
+
+
+        <div class="card">
+
+
+            <div class="card-header">
+
+                <h3 class="card-title font-weight-bold">
+
+                    Tasks Due This Week
+
+                </h3>
+
+            </div>
+
+
+            <div class="card-body">
+
+
+
+                {% for task in due_tasks %}
+
+
+                    <div class="border-bottom mb-3 pb-2">
+
+
+                        <b>
+
+                            {{ task.title }}
+
+                        </b>
+
+
+                        <br>
+
+
+                        <span class="badge badge-info">
+
+                            {{ task.priority }}
+
+                        </span>
+
+
+                        <br>
+
+
+                        <i class="fas fa-calendar"></i>
+
+                        {{ task.due_date }}
+
+
+                        <br>
+
+
+                        <i class="fas fa-user"></i>
+
+
+                        {% if task.assigned_to %}
+
+                            {{ task.assigned_to.username }}
+
+                        {% else %}
+
+                            Not Assigned
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                {% empty %}
+
+
+                    <p class="text-muted">
+
+                        No tasks due this week
+
+                    </p>
+
+
+                {% endfor %}
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<script>
+
+
+// Task Status Doughnut Chart
+
+
+const taskChart = document.getElementById('taskChart');
+
+
+new Chart(taskChart, {
+
+    type: 'doughnut',
+
+    data: {
+
+        labels: [
+
+            'Pending',
+
+            'In Progress',
+
+            'Completed'
+
+        ],
+
+        datasets: [
+
+            {
+
+                data: [
+
+                    {{ todo_tasks }},
+
+                    {{ progress_tasks }},
+
+                    {{ completed_tasks }}
+
+                ],
+
+                borderWidth: 2
+
+            }
+
+        ]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        cutout: '60%',
+
+        plugins: {
+
+            legend: {
+
+                position: 'bottom',
+
+                labels: {
+
+                    boxWidth: 15,
+
+                    padding: 15
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+
+
+
+
+// Project Completion Horizontal Bar Chart
+
+
+const projectChart = document.getElementById('projectChart');
+
+
+new Chart(projectChart, {
+
+
+    type: 'bar',
+
+
+    data: {
+
+
+        labels: [
+
+
+            {% for item in project_task_data %}
+
+
+                "{{ item.name }}",
+
+
+            {% endfor %}
+
+
+        ],
+
+
+
+        datasets: [{
+
+
+            label: 'Completion %',
+
+
+
+            data: [
+
+
+
+                {% for item in project_task_data %}
+
+
+                    {{ item.percentage }},
+
+
+                {% endfor %}
+
+
+            ],
+
+
+
+            borderWidth: 2
+
+
+        }]
+
+
+    },
+
+
+    options: {
+
+
+        indexAxis: 'y',
+
+
+
+        scales: {
+
+
+            x: {
+
+
+                beginAtZero: true,
+
+
+                max: 100,
+
+
+                ticks: {
+
+
+                    callback: function(value) {
+
+
+                        return value + '%';
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        },
+
+
+        plugins: {
+
+
+            legend: {
+
+
+                display: false
+
+
+            }
+
+
+        }
+
+
+    }
+
+
+});
+
+
+</script>
+
+
+
+
+
+{% endblock %}

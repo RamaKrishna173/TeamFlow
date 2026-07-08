@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h3 class="card-title">
+
+            Projects
+
+        </h3>
+
+        <div class="card-tools">
+
+            <a href="{% url 'add_project' %}" class="btn btn-primary">
+
+                <i class="fas fa-plus"></i>
+
+                Add Project
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>Name</th>
+
+                    <th>Priority</th>
+
+                    <th>Status</th>
+
+                    <th>Progress</th>
+
+                    <th>Start Date</th>
+
+                    <th>End Date</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in project_data %}
+
+                <tr>
+
+                    <td>
+
+                        {{ item.project.name }}
+
+                    </td>
+
+                    <td>
+
+                        {% if item.project.priority == "High" %}
+
+                        <span class="badge badge-danger">
+
+                            High
+
+                        </span>
+
+                        {% elif item.project.priority == "Medium" %}
+
+                        <span class="badge badge-warning">
+
+                            Medium
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-success">
+
+                            Low
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if item.project.status == "Completed" %}
+
+                        <span class="badge badge-success">
+
+                            Completed
+
+                        </span>
+
+                        {% elif item.project.status == "In Progress" %}
+
+                        <span class="badge badge-warning">
+
+                            In Progress
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-secondary">
+
+                            Planning
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td style="min-width:220px;">
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar bg-success"
+                                role="progressbar"
+                                aria-valuenow="{{ item.progress }}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                style="width: {{ item.progress }}%;" >
+
+                                {{ item.progress }}%
+
+                            </div>
+
+                        </div>
+
+                        <small>
+
+                            {{ item.completed_tasks }}
+
+                            /
+
+                            {{ item.total_tasks }}
+
+                            Tasks Completed
+
+                        </small>
+
+                    </td>
+
+                    <td>
+
+                        {{ item.project.start_date }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.project.end_date }}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'edit_project' item.project.id %}"
+                           class="btn btn-warning btn-sm">
+
+                            <i class="fas fa-edit"></i>
+
+                            Edit
+
+                        </a>
+
+                        <a href="{% url 'delete_project' item.project.id %}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Delete this project?')">
+
+                            <i class="fas fa-trash"></i>
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7" class="text-center">
+
+                        No Projects Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

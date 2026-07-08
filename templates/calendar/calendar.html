@@ -1,0 +1,655 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css"
+      rel="stylesheet">
+
+
+
+<div class="card">
+
+
+    <div class="card-header">
+
+
+        <h3 class="card-title font-weight-bold">
+
+            <i class="fas fa-calendar-alt"></i>
+
+            Team Calendar
+
+        </h3>
+
+
+    </div>
+
+
+
+
+
+    <div class="card-body">
+
+
+
+        <div class="row mb-4">
+
+
+            <div class="col-md-3">
+
+
+                <label>
+                    Project
+                </label>
+
+
+                <select id="project"
+                        class="form-control">
+
+
+                    <option value="">
+                        All Projects
+                    </option>
+
+
+
+                    {% for project in projects %}
+
+
+                    <option value="{{ project.id }}">
+
+                        {{ project.name }}
+
+                    </option>
+
+
+                    {% endfor %}
+
+
+
+                </select>
+
+
+            </div>
+
+
+
+
+
+
+            <div class="col-md-3">
+
+
+                <label>
+                    Status
+                </label>
+
+
+                <select id="status"
+                        class="form-control">
+
+
+                    <option value="">
+                        All Status
+                    </option>
+
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+
+                    <option value="In Progress">
+                        In Progress
+                    </option>
+
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+
+
+
+
+            <div class="col-md-3">
+
+
+                <label>
+                    Priority
+                </label>
+
+
+                <select id="priority"
+                        class="form-control">
+
+
+                    <option value="">
+                        All Priority
+                    </option>
+
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+
+                    <option value="Medium">
+                        Medium
+                    </option>
+
+
+                    <option value="High">
+                        High
+                    </option>
+
+
+                    <option value="Critical">
+                        Critical
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+
+
+
+
+
+            <div class="col-md-3">
+
+
+                <label>
+                    Assigned User
+                </label>
+
+
+                <select id="assigned"
+                        class="form-control">
+
+
+                    <option value="">
+                        All Users
+                    </option>
+
+
+
+                    {% for user in users %}
+
+
+                    <option value="{{ user.id }}">
+
+                        {{ user.username }}
+
+                    </option>
+
+
+                    {% endfor %}
+
+
+                </select>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <div id="calendar"></div>
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="modal fade"
+     id="taskModal">
+
+
+    <div class="modal-dialog">
+
+
+        <div class="modal-content">
+
+
+
+            <div class="modal-header">
+
+
+                <h5 class="modal-title">
+
+                    Task Details
+
+                </h5>
+
+
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+
+                    <span>
+                        &times;
+                    </span>
+
+
+                </button>
+
+
+            </div>
+
+
+
+
+
+            <div class="modal-body">
+
+
+                <p>
+                    <b>Task:</b>
+                    <span id="taskTitle"></span>
+                </p>
+
+
+                <p>
+                    <b>Project:</b>
+                    <span id="taskProject"></span>
+                </p>
+
+
+                <p>
+                    <b>Status:</b>
+                    <span id="taskStatus"></span>
+                </p>
+
+
+                <p>
+                    <b>Priority:</b>
+                    <span id="taskPriority"></span>
+                </p>
+
+
+                <p>
+                    <b>Assigned:</b>
+                    <span id="taskAssigned"></span>
+                </p>
+
+
+                <p>
+                    <b>Description:</b>
+                </p>
+
+
+                <p id="taskDescription"></p>
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+<script src="{% static 'fullcalendar/index.global.min.js' %}"></script>
+
+
+
+<script>
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function()
+    {
+
+
+        let calendarElement =
+            document.getElementById("calendar");
+
+
+        let projectFilter =
+            document.getElementById("project");
+
+
+        let statusFilter =
+            document.getElementById("status");
+
+
+        let priorityFilter =
+            document.getElementById("priority");
+
+
+        let assignedFilter =
+            document.getElementById("assigned");
+
+
+
+
+        let calendar =
+            new FullCalendar.Calendar(
+                calendarElement,
+                {
+
+
+                    initialView:
+                        "dayGridMonth",
+
+
+                    initialDate:
+                        "2026-07-01",
+
+
+                    editable:
+                        true,
+
+
+                    height:
+                        700,
+
+
+
+                    headerToolbar:
+                    {
+
+                        left:
+                            "prev,next today",
+
+                        center:
+                            "title",
+
+                        right:
+                            "dayGridMonth,timeGridWeek,timeGridDay"
+
+                    },
+
+
+
+
+
+                    events:
+                        function(
+                            fetchInfo,
+                            successCallback,
+                            failureCallback
+                        )
+                        {
+
+
+                            let url =
+                                "/calendar/events/?" +
+
+                                "project=" +
+                                projectFilter.value +
+
+                                "&status=" +
+                                statusFilter.value +
+
+                                "&priority=" +
+                                priorityFilter.value +
+
+                                "&assigned=" +
+                                assignedFilter.value;
+
+
+
+                            fetch(url)
+
+
+                            .then(
+                                response =>
+                                    response.json()
+                            )
+
+
+                            .then(
+                                data =>
+                                {
+
+                                    console.log(
+                                        "Calendar Events:",
+                                        data
+                                    );
+
+
+                                    successCallback(data);
+
+                                }
+                            )
+
+
+                            .catch(
+                                error =>
+                                {
+
+                                    console.log(error);
+
+                                    failureCallback(error);
+
+                                }
+                            );
+
+
+                        },
+
+
+
+
+
+
+
+                    eventDrop:
+                        function(info)
+                        {
+
+
+                            fetch(
+                                "/calendar/update/",
+                                {
+
+
+                                    method:
+                                        "POST",
+
+
+
+                                    headers:
+                                    {
+
+                                        "Content-Type":
+                                            "application/json",
+
+
+                                        "X-CSRFToken":
+                                            "{{ csrf_token }}"
+
+                                    },
+
+
+
+                                    body:
+                                        JSON.stringify(
+                                        {
+
+                                            id:
+                                                info.event.id,
+
+
+                                            start:
+                                                info.event.startStr
+
+                                        })
+
+                                }
+
+                            )
+
+
+                            .then(
+                                response =>
+                                    response.json()
+                            )
+
+
+                            .then(
+                                data =>
+                                {
+
+                                    if(!data.success)
+                                    {
+
+                                        info.revert();
+
+                                    }
+
+                                }
+
+                            )
+
+
+                            .catch(
+                                function()
+                                {
+
+                                    info.revert();
+
+                                }
+                            );
+
+
+                        },
+
+
+
+
+
+
+
+                    eventClick:
+                        function(info)
+                        {
+
+
+                            document.getElementById(
+                                "taskTitle"
+                            ).innerHTML =
+                                info.event.title;
+
+
+
+                            document.getElementById(
+                                "taskProject"
+                            ).innerHTML =
+                                info.event.extendedProps.project;
+
+
+
+                            document.getElementById(
+                                "taskStatus"
+                            ).innerHTML =
+                                info.event.extendedProps.status;
+
+
+
+                            document.getElementById(
+                                "taskPriority"
+                            ).innerHTML =
+                                info.event.extendedProps.priority;
+
+
+
+                            document.getElementById(
+                                "taskAssigned"
+                            ).innerHTML =
+                                info.event.extendedProps.assigned;
+
+
+
+                            document.getElementById(
+                                "taskDescription"
+                            ).innerHTML =
+                                info.event.extendedProps.description;
+
+
+
+                            $("#taskModal").modal("show");
+
+
+                        }
+
+
+                });
+
+
+
+        calendar.render();
+
+
+
+
+
+        document
+        .querySelectorAll("select")
+        .forEach(
+            function(element)
+            {
+
+
+                element.addEventListener(
+                    "change",
+                    function()
+                    {
+
+                        calendar.refetchEvents();
+
+                    }
+                );
+
+
+            }
+        );
+
+
+    }
+);
+
+</script>
+
+
+
+{% endblock %}
