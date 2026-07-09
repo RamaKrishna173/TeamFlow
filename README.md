@@ -239,88 +239,161 @@ TeamFlow/
 ```
 
 
-
 # ⚙️ Installation and Setup
 
-## 1. Clone Repository
+## 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-```
-
-Move into project directory:
-
-```bash
+git clone https://github.com/RamaKrishna173/TeamFlow.git
 cd TeamFlow
 ```
 
+---
 
+## 2. Verify the Project Files
 
-## 2. Create Virtual Environment
-
-Windows:
-
-```bash
-python -m venv venv
-
-venv\Scripts\activate
-```
-
-Linux/Mac:
+Ensure you are in the project directory by running:
 
 ```bash
-python3 -m venv venv
-
-source venv/bin/activate
+dir
 ```
 
+You should see files and folders similar to the following:
 
+```text
+README.md
+DATABASE_SCHEMA.md
+ARCHITECTURE.md
+requirements.txt
+manage.py
+db.sqlite3
+accounts/
+calendar_app/
+dashboard/
+notifications/
+projects/
+reports/
+static/
+tasks/
+templates/
+TeamFlow/
+```
 
-## 3. Install Dependencies
+---
+
+## 3. Install Required Dependencies
+
+Install all required Python packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
+---
 
+## 4. Run the Development Server
 
-## 4. Apply Database Migrations
-
-```bash
-python manage.py makemigrations
-
-python manage.py migrate
-```
-
-
-
-## 5. Create Admin Account
-
-```bash
-python manage.py createsuperuser
-```
-
-Enter:
-
-```
-Username
-Email
-Password
-```
-
-
-
-## 6. Run Development Server
+Start the Django development server:
 
 ```bash
 python manage.py runserver
 ```
 
-Open browser:
+If the server starts successfully, you will see output similar to:
 
+```text
+Starting development server at http://127.0.0.1:8000/
 ```
+
+Open your browser and navigate to:
+
+```text
 http://127.0.0.1:8000/
 ```
+
+---
+
+# 🔑 Demo Login Credentials
+
+The repository includes a preconfigured SQLite database (`db.sqlite3`) with sample data and demo accounts.
+
+## Application Login
+
+Open:
+
+```text
+http://127.0.0.1:8000/login/
+```
+
+**Demo User**
+
+**Username:**
+
+```text
+RamaKrishna
+```
+
+**Password:**
+
+```text
+Rama123@
+```
+
+---
+
+## Django Admin Login
+
+Open:
+
+```text
+http://127.0.0.1:8000/admin/
+```
+
+**Administrator**
+
+**Username:**
+
+```text
+bajoj
+```
+
+**Password:**
+
+```text
+bajoji
+```
+
+---
+
+# 📦 Demo Data
+
+The included SQLite database contains sample:
+
+* Projects
+* Tasks
+* Task Assignments
+* Comments
+* Activity History
+* Notifications
+* Calendar Events
+
+This allows reviewers to explore the application's functionality immediately without creating additional data.
+
+---
+
+# 📌 Notes
+
+* The project uses **SQLite** as the database.
+* The repository already includes a preconfigured **db.sqlite3** file with demo data.
+* No additional database configuration is required to run the application.
+* If you wish to start with a fresh database, delete `db.sqlite3` and run:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+```
+
 
 
 
